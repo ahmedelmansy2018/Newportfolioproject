@@ -1,0 +1,139 @@
+﻿@model IEnumerable<BL.Enitites.Project>
+
+@{
+    ViewData["Title"] = "Index";
+
+
+}
+<script src="~/js/jquery.js"></script>
+
+<div style="padding:140px">
+
+
+    <p>
+        <a class="btn btn-outline-primary" asp-action="Create">Create New</a>
+    </p>
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning" role="alert">
+            <i class="bi bi-exclamation-triangle"></i>
+            No movies found!
+        </div>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProjectName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Description)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ImageProject)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ProjectName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            <img class="img" src="~/img/portfolio/@item.ImageProject" style="border-radius:5%;width:70px;height:70px" alt="">
+                        </td>
+                        <td>
+                            <a asp-action="Edit" class="btn btn-outline-dark" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Details" class="btn btn-outline-info" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" class="btn btn-outline-danger" asp-route-id="@item.Id">Delete</a>|
+                            <button class="btn btn-danger js-delete" data-model-id="@item.Id"> Delete</button>
+                            <a href="javascript:;" class="btn btn-danger js-delete" data-model-id="@item.Id">
+                                <i class="bi bi-trash"></i>
+                                DeletedAjax
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+<script>
+       
+
+
+        $(document).ready(function () {
+            $('.js-delete').on('click', function () {
+                var btn = $(this);
+                var id = btn.data("model-id");
+                console.log(id);
+                $.ajax({
+                    url: '/Projects/Deleted/' + id,
+                    //type: "post",
+                    success: function () {
+                        btn.parents("tr").remove();
+                        
+                        toastr.success('Deleted!');
+                    },
+                    error: function () {
+                        toastr.error('Something went wrong!');
+
+                    }
+                });
+
+
+            });
+        });
+
+
+    </script>
+@*<script>
+    $(document).ready(function () {
+        $('.js-delete').on('click', function () {
+            var btn = $(this);
+            var id = btn.data("model-id");
+            bootbox.confirm({
+                message: "Are you sure that you need to delete this movie?",
+                buttons: {
+                    confirm: {
+                        label: 'Yes',
+                        className: 'btn-danger'
+                    },
+                    cancel: {
+                        label: 'No',
+                        className: 'btn-outline-secondary'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: '/movies/delete/' + id,
+                            success: function () {
+                                var movieContainer = btn.parents("tr");
+                    
+
+                                setTimeout(function () {
+                                    movieContainer.remove();
+                                }, 1000);
+
+                                toastr.success('Movies deleted');
+                            },
+                            error: function () {
+                                toastr.error('Something went wrong!');
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>*@
